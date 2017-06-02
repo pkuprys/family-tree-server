@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface FamilyMember {
 
+    long getId();
+
     String getFirstName();
 
     String getLastName();
@@ -15,7 +17,9 @@ public interface FamilyMember {
 
     Sex getSex();
 
-    List<? extends LifeEvent> getLifeEvents();
+    List<LifeEvent> getLifeEvents();
+
+    List<FamilyMember> getParents();
 
     @SuppressWarnings("unused")
     enum Sex {

@@ -29,6 +29,9 @@ public class FamilyMemberEntity implements FamilyMember {
     private Sex sex;
     @OneToMany(cascade = CascadeType.ALL)
     private List<LifeEventEntity> lifeEvents;
+    @ManyToMany
+    private List<FamilyMemberEntity> parents;
+
 
     @SuppressWarnings("WeakerAccess")
     protected FamilyMemberEntity() {
@@ -63,6 +66,11 @@ public class FamilyMemberEntity implements FamilyMember {
     }
 
     @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
     public String getFirstName() {
         return firstName;
     }
@@ -88,13 +96,16 @@ public class FamilyMemberEntity implements FamilyMember {
     }
 
     @Override
-    public List<? extends LifeEvent> getLifeEvents() {
-        return lifeEvents;
+    public List<LifeEvent> getLifeEvents() {
+        return new ArrayList<>(lifeEvents);
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public List<FamilyMember> getParents() {
+        return new ArrayList<>(parents);
     }
+
+
 
     public static FamilyMemberEntity from(FamilyMember familyMember) {
         FamilyMemberEntity fme = new FamilyMemberEntity();
@@ -107,6 +118,10 @@ public class FamilyMemberEntity implements FamilyMember {
         if (familyMember.getLifeEvents() != null) {
             fme.lifeEvents = familyMember.getLifeEvents().stream().map(LifeEventEntity::from)
                     .collect(Collectors.toList());
+        }
+        //TODO figure out hateoas for parenting
+        if (fme.getParents() != null) {
+            fme.parents = fme.getParents().stream().map(FamilyMemberEntity::from).collect(Collectors.toList());
         }
         return fme;
     }
